@@ -33,6 +33,30 @@ defmodule DevFinderWeb.SearchLive do
     {:noreply, push_patch(socket, to: ~p"/?q=#{query}")}
   end
 
+  defp joining_date_message(datetime) do
+    {:ok, %DateTime{day: day, month: month, year: year}, _} = DateTime.from_iso8601(datetime)
+
+    "Joined on #{day} #{month_in_words(month)} #{year}"
+  end
+
+  defp month_in_words(month) do
+    case month do
+      1 -> "Jan"
+      2 -> "Feb"
+      3 -> "Mar"
+      4 -> "Apr"
+      5 -> "May"
+      6 -> "Jun"
+      7 -> "Jul"
+      8 -> "Aug"
+      9 -> "Sep"
+      10 -> "Oct"
+      11 -> "Nov"
+      12 -> "Dec"
+
+    end
+  end
+
   defp assign_user(socket, {:ok, %User{} = user}), do: assign(socket, :user, user)
 
   defp assign_user(socket, {:error, "no results"}), do: assign(socket, :user, nil)

@@ -9,6 +9,30 @@ defmodule DevFinderWeb.SearchLiveTest do
 
   describe "Index" do
 
+    defp joining_date_message(datetime) do
+      {:ok, %DateTime{day: day, month: month, year: year}, _} = DateTime.from_iso8601(datetime)
+
+      "Joined on #{day} #{month_in_words(month)} #{year}"
+    end
+
+    defp month_in_words(month) do
+      case month do
+        1 -> "Jan"
+        2 -> "Feb"
+        3 -> "Mar"
+        4 -> "Apr"
+        5 -> "May"
+        6 -> "Jun"
+        7 -> "Jul"
+        8 -> "Aug"
+        9 -> "Sep"
+        10 -> "Oct"
+        11 -> "Nov"
+        12 -> "Dec"
+
+      end
+    end
+
     test "shows the profile information of Octocat on the first load", %{conn: conn} do
 
       encoded_octocat_fixture = response_fixture()
@@ -38,7 +62,7 @@ defmodule DevFinderWeb.SearchLiveTest do
       assert html =~ decoded_octocat_fixture["bio"]
 
       # Verifying if the page contains the joining information of octocat profile
-      assert html =~ decoded_octocat_fixture["created_at"]
+      assert html =~ decoded_octocat_fixture["created_at"] |> joining_date_message()
 
       # Verifying if the page contains the repos of octocat profile
       assert html =~ inspect(decoded_octocat_fixture["public_repos"])
