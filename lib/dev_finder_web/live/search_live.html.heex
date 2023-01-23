@@ -9,17 +9,30 @@
 
 <!-- The card component --> 
 <div :if={!is_nil(@user)} class="w-full rounded-md mt-4 p-6 drop-shadow-md bg-near-white dark:bg-bright-blackish-blue">
-  <div class="flex items-start">
+  <div class="md:flex md:items-start">
     <!-- Profile image --> 
-    <img class="w-1/6 rounded-full" src={@user.avatar_url}>
+    <img class="hidden md:block w-1/6 rounded-full" src={@user.avatar_url}>
 
-    <div class="ml-4 w-full">
-      <div class="md:flex md:items-center md:justify-between">
-        <h1 class="text-2xl font-bold text-soft-blackish-blue dark:text-white"><%= @user.name || @user.username %></h1>
-        <p class="text-soft-gray dark:text-white"><%= @user.joined_at %></p>
+    <div class="md:ml-4 w-full">
+
+      <div class="flex items-center md:items-start md:justify-between">
+        <img class="block md:hidden w-1/6 rounded-full" src={@user.avatar_url}>
+
+        <div class="block ml-4 md:hidden">
+          <h1 class="text-2xl font-bold text-soft-blackish-blue dark:text-white"><%= @user.name || @user.username %></h1>
+          <h3 class="text-bright-blue"><%= "@#{@user.username}"%></h3>
+          <p class="text-soft-gray dark:text-white"><%= @user.joined_at %></p>
+        </div>
+
+        <div class="hidden md:block">
+          <h1 class="text-2xl font-bold text-soft-blackish-blue dark:text-white"><%= @user.name || @user.username %></h1>
+          <h3 class="text-bright-blue"><%= "@#{@user.username}"%></h3>
+        </div>
+        
+        <p class="hidden md:block text-soft-gray dark:text-white"><%= @user.joined_at %></p>
       </div>
 
-      <h3 class="text-bright-blue"><%= "@#{@user.username}"%></h3>
+      
 
       
       <p class={[
@@ -62,7 +75,7 @@
       </div>
 
       <!-- Basic information --> 
-      <div class="py-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="py-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div class={[
           "flex items-center text-soft-bluish-gray dark:text-white",
           is_nil(@user.location) && "opacity-60"
