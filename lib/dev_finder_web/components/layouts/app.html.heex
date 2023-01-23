@@ -1,0 +1,43 @@
+<main class="pt-20 px-4">
+  <header class="max-w-4xl mx-auto">
+    <div class="flex items-center justify-between py-3">
+      <h2 class="font-bold text-xl text-soft-blackish-blue dark:text-white">devfinder</h2>
+      <div onclick="changeToDarkMode()" class="flex items-center justify-center gap-4 cursor-pointer text-soft-gray hover:text-soft-bluish-gray dark:hidden">
+        <div class="block uppercase">Dark</div>
+        <.moon_svg/>
+      </div>
+      <div onclick="changeToLightMode()" class="hidden items-center justify-center gap-4 cursor-pointer text-white hover:text-bright-blue dark:flex">
+        <div class="block uppercase">Light</div>
+        <.sun_svg/>
+      </div>
+    </div>
+  </header>
+  <div class="mx-auto max-w-4xl">
+    <.flash kind={:info} title="Success!" flash={@flash} />
+    <.flash kind={:error} title="Error!" flash={@flash} />
+    <.flash
+      id="disconnected"
+      kind={:error}
+      title="We can't find the internet"
+      close={false}
+      autoshow={false}
+      phx-disconnected={show("#disconnected")}
+      phx-connected={hide("#disconnected")}
+    >
+      Attempting to reconnect <Heroicons.arrow_path class="ml-1 w-3 h-3 inline animate-spin" />
+    </.flash>
+    <%= @inner_content %>
+  </div>
+</main>
+
+<script>
+  function changeToDarkMode() {
+    localStorage.theme = 'dark'
+    document.documentElement.classList.add('dark')
+  }
+
+  function changeToLightMode() {
+    localStorage.theme = 'light'
+    document.documentElement.classList.remove('dark')
+  }
+</script>

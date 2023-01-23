@@ -1,0 +1,102 @@
+<.form class="flex items-center w-full mt-4 px-2 py-3 drop-shadow-md rounded-md bg-near-white dark:bg-bright-blackish-blue"  id="search-form" for={:username} phx-submit="search">
+  <.search_icon_svg class="ml-4 mr-6 flex-none"/>
+
+  <input class="grow p-0 border-none focus:ring-0 text-soft-blackish-blue dark:text-white bg-near-white dark:bg-bright-blackish-blue" type="text" name="username[query]" value={@search_query} placeholder="Search Github username" />
+
+  <p :if={is_nil(@user)} class="text-red-500 flex-none mx-4">No results</p>
+  <button class="flex-none rounded-lg px-4 py-2 hover:opacity-60 bg-bright-blue text-white" type="submit">Search</button>
+</.form>
+
+<!-- The card component --> 
+<div :if={!is_nil(@user)} class="w-full rounded-md mt-4 p-6 drop-shadow-md bg-near-white dark:bg-bright-blackish-blue">
+  <div class="flex items-start">
+    <!-- Profile image --> 
+    <img class="w-1/6 rounded-full" src={@user.avatar_url}>
+
+    <div class="ml-4 w-full">
+      <div class="md:flex md:items-center md:justify-between">
+        <h1 class="text-2xl font-bold text-soft-blackish-blue dark:text-white"><%= @user.name || @user.username %></h1>
+        <p class="text-soft-gray dark:text-white"><%= @user.joined_at %></p>
+      </div>
+
+      <h3 class="text-bright-blue"><%= "@#{@user.username}"%></h3>
+
+      
+      <p class={[
+        "py-4 text-soft-gray dark:text-white",
+        is_nil(@user.bio) && "opacity-60"
+        ]}>
+        <%= @user.bio || "This bio is not available" %>
+      </p>
+
+      <!-- Stats card --> 
+      <div class="w-full rounded-md my-5 p-4 bg-very-soft-bluish-gray dark:bg-near-black">
+        <div class="grid grid-cols-3">
+          <div>
+            <dt class="text-sm text-soft-gray dark:text-white">
+              Repos
+            </dt>
+            <dd class="font-bold text-soft-blackish-blue dark:text-white">
+              <%= @user.repos %>
+            </dd>
+          </div>
+
+          <div>
+            <dt class="text-sm text-soft-gray dark:text-white">
+              Followers
+            </dt>
+            <dd class="font-bold text-soft-blackish-blue dark:text-white">
+              <%= @user.followers %>
+            </dd>
+          </div>
+
+          <div>
+            <dt class="text-sm text-soft-gray dark:text-white">
+              Following
+            </dt>
+            <dd class="font-bold text-soft-blackish-blue dark:text-white">
+              <%= @user.following %>
+            </dd>
+          </div>
+        </div>
+      </div>
+
+      <!-- Basic information --> 
+      <div class="py-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class={[
+          "flex items-center text-soft-bluish-gray dark:text-white",
+          is_nil(@user.location) && "opacity-60"
+          ]}>
+          <.location_icon_svg class="mr-3"/>
+          <p><%= @user.location || "Not available" %></p>
+        </div>
+
+        <div class={[
+          "flex items-center text-soft-bluish-gray dark:text-white group cursor-pointer",
+          is_nil(@user.twitter_username) && "opacity-60 cursor-default"
+          ]}>
+          <.twitter_icon_svg class="mr-3" />
+          <.link class="group-hover:underline" :if={!is_nil(@user.twitter_username)} href={"https://twitter.com/#{@user.twitter_username}"}><%= @user.twitter_username %></.link>
+          <p :if={is_nil(@user.twitter_username)}>Not available</p>
+        </div>
+
+        <div class={[
+          "flex items-center text-soft-bluish-gray dark:text-white group cursor-pointer",
+          @user.blog == "" && "opacity-60 cursor-default"
+          ]}>
+          <.website_icon_svg class="mr-3" />
+          <.link class="group-hover:underline" :if={!is_nil(@user.blog)} href={@user.blog}><%= @user.blog %></.link>
+          <p :if={@user.blog == ""}>Not available</p>
+        </div>
+
+        <div class={[
+          "flex items-center text-soft-bluish-gray dark:text-white",
+          is_nil(@user.company) && "opacity-60"
+          ]}>
+          <.company_icon_svg class="mr-3" />
+          <p><%= @user.company || "Not available" %></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
