@@ -1,4 +1,4 @@
-defmodule DevFinder.Fixtures do
+defmodule DevFinder.Fixtures.Github do
 
   @doc """
   Sends the encoded fixture for Octocat by default
@@ -20,18 +20,18 @@ defmodule DevFinder.Fixtures do
 
     }
 
-    attrs
+    response = attrs
     |> Enum.into(default_attrs)
     |> Jason.encode!()
+
+    {200, response}
   end
 
-  def encoded_authentication_error_response_fixture(attrs \\ %{}) do
-    default_attrs = %{
+  def encoded_authentication_error_response_fixture() do
+    response = %{
       "message" => "Some kind of authentication error"
     }
 
-    attrs
-    |> Enum.into(default_attrs)
-    |> Jason.encode!()
+    {401, Jason.encode!(response)}
   end
 end
