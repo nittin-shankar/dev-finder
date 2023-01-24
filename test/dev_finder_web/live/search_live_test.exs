@@ -35,7 +35,7 @@ defmodule DevFinderWeb.SearchLiveTest do
 
     test "shows the profile information of Octocat on the first load", %{conn: conn} do
 
-      encoded_octocat_fixture = response_fixture()
+      encoded_octocat_fixture = encoded_success_response_fixture()
       # Mock
       expect(GithubClientMock, :get_user, 2, fn args ->
         # The reason I gave the expect function the argument of 2 is because liveview calls mount two times
@@ -91,10 +91,10 @@ defmodule DevFinderWeb.SearchLiveTest do
     test "shows the profile information of searched user", %{conn: conn} do
       expect(GithubClientMock, :get_user, 2, fn args ->
         assert args == "octocat"
-        {:ok, %Finch.Response{status: 200, body: response_fixture()}}
+        {:ok, %Finch.Response{status: 200, body: encoded_success_response_fixture()}}
       end)
 
-      encoded_random_user_fixture = response_fixture(%{"name" => "Some User"})
+      encoded_random_user_fixture = encoded_success_response_fixture(%{"name" => "Some User"})
 
       expect(GithubClientMock, :get_user, 1, fn args ->
         assert args == "some-user"
@@ -114,7 +114,7 @@ defmodule DevFinderWeb.SearchLiveTest do
     test "Display a message if no user is found", %{conn: conn} do
       expect(GithubClientMock, :get_user, 2, fn args ->
         assert args == "octocat"
-        {:ok, %Finch.Response{status: 200, body: response_fixture()}}
+        {:ok, %Finch.Response{status: 200, body: encoded_success_response_fixture()}}
       end)
 
       expect(GithubClientMock, :get_user, 1, fn args ->
@@ -130,10 +130,10 @@ defmodule DevFinderWeb.SearchLiveTest do
     end
 
     test "Display a message if user has not bio", %{conn: conn} do
-      encoded_response_fixture = response_fixture(%{"bio" => nil})
+      encoded_success_response_fixture = encoded_success_response_fixture(%{"bio" => nil})
       expect(GithubClientMock, :get_user, 2, fn args ->
         assert args == "octocat"
-        {:ok, %Finch.Response{status: 200, body: encoded_response_fixture}}
+        {:ok, %Finch.Response{status: 200, body: encoded_success_response_fixture}}
       end)
 
       {:ok, _index_live, html} = live(conn, ~p"/")
@@ -142,12 +142,12 @@ defmodule DevFinderWeb.SearchLiveTest do
     end
 
     test "Display username if name is not available", %{conn: conn} do
-      encoded_response_fixture = response_fixture(%{"name" => nil})
+      encoded_success_response_fixture = encoded_success_response_fixture(%{"name" => nil})
       expect(GithubClientMock, :get_user, 2, fn args ->
         assert args == "octocat"
-        {:ok, %Finch.Response{status: 200, body: encoded_response_fixture}}
+        {:ok, %Finch.Response{status: 200, body: encoded_success_response_fixture}}
       end)
-      decoded_response_fixture = encoded_response_fixture |> Jason.decode!()
+      decoded_response_fixture = encoded_success_response_fixture |> Jason.decode!()
 
       {:ok, _index_live, html} = live(conn, ~p"/")
 
@@ -156,10 +156,10 @@ defmodule DevFinderWeb.SearchLiveTest do
     end
 
     test "If user info like website, company, location and twitter username is not available, then display placeholder text", %{conn: conn} do
-      encoded_response_fixture = response_fixture(%{"website" => nil, "company" => nil, "location" => nil, "twitter_username" => nil})
+      encoded_success_response_fixture = encoded_success_response_fixture(%{"website" => nil, "company" => nil, "location" => nil, "twitter_username" => nil})
       expect(GithubClientMock, :get_user, 2, fn args ->
         assert args == "octocat"
-        {:ok, %Finch.Response{status: 200, body: encoded_response_fixture}}
+        {:ok, %Finch.Response{status: 200, body: encoded_success_response_fixture}}
       end)
 
       {:ok, _index_live, html} = live(conn, ~p"/")
@@ -169,13 +169,13 @@ defmodule DevFinderWeb.SearchLiveTest do
     end
 
     test "Display website, twitter as links to resources", %{conn: conn} do
-      encoded_response_fixture = response_fixture()
+      encoded_success_response_fixture = encoded_success_response_fixture()
       expect(GithubClientMock, :get_user, 2, fn args ->
         assert args == "octocat"
-        {:ok, %Finch.Response{status: 200, body: encoded_response_fixture}}
+        {:ok, %Finch.Response{status: 200, body: encoded_success_response_fixture}}
       end)
 
-      decoded_response_fixture = encoded_response_fixture |> Jason.decode!()
+      decoded_response_fixture = encoded_success_response_fixture |> Jason.decode!()
 
       {:ok, index_live, _html} = live(conn, ~p"/")
 
