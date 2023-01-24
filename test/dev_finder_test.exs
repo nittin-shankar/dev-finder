@@ -3,39 +3,21 @@ defmodule DevFinder.DevFinderTest do
 
   import Mox
   import ExUnit.CaptureLog
-  import DevFinder.Fixtures
+  import DevFinder.Fixtures.Github
 
   alias DevFinder.GithubClientMock
 
   setup :verify_on_exit!
 
+
+
   describe "get_user/1" do
-    defp github_client_success_mock(body \\ encoded_success_response_fixture()) do
-      expect(GithubClientMock, :get_user, fn _args ->
-
-        {:ok, %Finch.Response{status: 200, body: body}}
-      end)
-    end
-
-    defp github_client_no_user_found_mock() do
-      expect(GithubClientMock, :get_user, fn _args ->
-        {:ok, %Finch.Response{status: 404}} # Github sends a HTTP response with 404 status code for invalid usernames
-      end)
-    end
-
-    defp github_client_authentication_error_mock(body \\ encoded_authentication_error_response_fixture()) do
-      expect(GithubClientMock, :get_user, fn _args ->
-        {:ok, %Finch.Response{status: 401, body: body}}
-      end)
-    end
-
-
-
     test "success: returns the user struct when given a valid github username" do
       # Mock
-      github_client_success_mock()
+      encoded_success_response_fixture()
+      |> github_client_success_mock()
 
-      response_fixture_decoded = encoded_success_response_fixture() |> Jason.decode!()
+      response_fixture_decoded = encoded_success_response_fixture() |> elem(1) |> Jason.decode!()
 
       # Actual testing happens here
       assert {:ok, %DevFinder.User{} = user} = DevFinder.get_user("octocat")
@@ -55,7 +37,6 @@ defmodule DevFinder.DevFinderTest do
     end
 
     test "failure: returns an error tuple when given an invalid github username" do
-
       github_client_no_user_found_mock()
 
       assert match? {:error, "no results"}, DevFinder.get_user("not-octocat")
@@ -64,9 +45,14 @@ defmodule DevFinder.DevFinderTest do
     test "failure: returns an error tuple when the client does not send user and status code is not 200" do
 
       # Mocking an authentication error, we can also mock a rate limit error here instead if we want
-      github_client_authentication_error_mock()
+      encoded_authentication_error_response_fixture()
+      |> github_client_authentication_error_mock()
 
-      authentication_error_response_fixture_decoded = encoded_authentication_error_response_fixture() |> Jason.decode!()
+      authentication_error_response_fixture_decoded =
+        encoded_authentication_error_response_fixture()
+        |> elem(1)
+        |> Jason.decode!()
+
       message = authentication_error_response_fixture_decoded |> Map.get("message")
 
       assert match? {:error, ^message}, DevFinder.get_user("octocat")
@@ -84,6 +70,26 @@ defmodule DevFinder.DevFinderTest do
         end)
 
       assert log =~ "Some message to be logged"
+    end
+
+    # All mocks are defined below
+    defp github_client_success_mock({status_code, body}) do
+      expect(GithubClientMock, :get_user, fn _args ->
+
+        {:ok, %Finch.Response{status: status_code, body: body}}
+      end)
+    end
+
+    defp github_client_no_user_found_mock() do
+      expect(GithubClientMock, :get_user, fn _args ->
+        {:ok, %Finch.Response{status: 404}} # Github sends a HTTP response with 404 status code for invalid usernames
+      end)
+    end
+
+    defp github_client_authentication_error_mock({status_code, body}) do
+      expect(GithubClientMock, :get_user, fn _args ->
+        {:ok, %Finch.Response{status: status_code, body: body}}
+      end)
     end
 
 

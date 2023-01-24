@@ -7,10 +7,6 @@ defmodule DevFinderWeb.SearchLive do
 
   @impl true
   def mount(_params, _session, socket) do
-    user = DevFinder.get_user(@default_username)
-
-    socket = assign(socket, :search_query, nil) |> assign_user(user)
-
     {:ok, socket}
   end
 
@@ -25,6 +21,10 @@ defmodule DevFinderWeb.SearchLive do
 
   @impl true
   def handle_params(_params, _session, socket) do
+    user = DevFinder.get_user(@default_username)
+
+    socket = assign(socket, :search_query, nil) |> assign_user(user)
+
     {:noreply, socket}
   end
 
