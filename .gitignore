@@ -32,4 +32,9 @@ dev_finder-*.tar
 npm-debug.log
 /assets/node_modules/
 
+.DS_Store
+
+config/.dev.env
+config/.test.env
+
 config/dev.secret.exs
