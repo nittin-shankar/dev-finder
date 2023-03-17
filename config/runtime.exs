@@ -54,7 +54,9 @@ end
 #
 # Alternatively, you can use `mix phx.gen.release` to generate a `bin/server`
 # script that automatically sets the env var above.
-config :dev_finder, DevFinderWeb.Endpoint, server: env!("PHX_SERVER", :boolean)
+if env!("PHX_SERVER", :boolean) do
+  config :dev_finder, DevFinderWeb.Endpoint, server: true
+end
 
 config :dev_finder, DevFinderWeb.Endpoint,
   url: [
