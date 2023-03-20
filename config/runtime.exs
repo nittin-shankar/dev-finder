@@ -1,4 +1,6 @@
 import Config
+import Dotenvy
+
 
 # config/runtime.exs is executed for all environments, including
 # during releases. It is executed after compilation and before the
@@ -6,6 +8,9 @@ import Config
 # and secrets from environment variables or elsewhere. Do not define
 # any compile-time configuration in here, as it won't be applied.
 # The block below contains prod specific runtime configuration.
+
+source(["config/.#{config_env()}.env", System.get_env()])
+
 
 # ## Using releases
 #
@@ -48,17 +53,6 @@ if config_env() == :prod do
     ],
     secret_key_base: secret_key_base
 
-  # The github personal access token which needs to be configured for making
-  # API requests.
-  github_access_token =
-    System.get_env("GITHUB_ACCESS_TOKEN") ||
-      raise """
-      environment variable GITHUB_ACCESS_TOKEN is missing.
-      You can generate one by calling: mix phx.gen.secret
-      """
-
-  # Configuring github personal access token
-  config :dev_finder, :github_access_token, github_access_token
 
 
   # ## SSL Support
@@ -111,3 +105,12 @@ if config_env() == :prod do
   #
   # See https://hexdocs.pm/swoosh/Swoosh.html#module-installation for details.
 end
+
+# Configuring the github client in developement environment
+config :dev_finder, :github_client, env!("GITHUB_CLIENT_MODULE", :module!)
+
+# Configuring github personal access token
+config :dev_finder, :github_access_token, env!("GITHUB_ACCESS_TOKEN", :string!)
+
+# Configuring API client for swoosh
+config :swoosh, :api_client, env!("SWOOSH_API_CLIENT", :module, false)

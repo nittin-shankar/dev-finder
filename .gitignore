@@ -33,3 +33,7 @@ npm-debug.log
 /assets/node_modules/
 
 config/dev.secret.exs
+
+config/*.env
+
+.DS_Store

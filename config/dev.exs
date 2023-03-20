@@ -1,9 +1,5 @@
 import Config
 
-# Configuring the github client in developement environment
-config :dev_finder, :github_client, DevFinder.GithubClient
-
-
 # For development, we disable any cache and enable
 # debugging and code reloading.
 #
@@ -69,8 +65,3 @@ config :phoenix, :stacktrace_depth, 20
 
 # Initialize plugs at runtime for faster development compilation
 config :phoenix, :plug_init_mode, :runtime
-
-# Disable swoosh api client as it is only required for production adapters.
-config :swoosh, :api_client, false
-
-import_config "dev.secret.exs"

@@ -11,14 +11,8 @@ import Config
 # before starting your production server.
 config :dev_finder, DevFinderWeb.Endpoint, cache_static_manifest: "priv/static/cache_manifest.json"
 
-# Configures Swoosh API Client
-config :swoosh, :api_client, DevFinder.Finch
-
 # Do not print debug messages in production
 config :logger, level: :info
-
-# Configuring the github client in production environment
-config :dev_finder, :github_client, DevFinder.GithubClient
 
 # Runtime production configuration, including reading
 # of environment variables, is done on config/runtime.exs.
